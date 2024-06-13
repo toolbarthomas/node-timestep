@@ -21,9 +21,11 @@
     "pretest": "npm run tsc",
     "test": "node node/esbuild.mocha.mjs",
     "posttest": "node node_modules/mocha/bin/mocha.js \"dist/tests/*.test.js\"",
-    "prebuild": "node node/esbuild.lib.mjs --suffix=.cjs && node node/esbuild.lib.mjs --minify -suffix=.cjs",
+    "prebuild": "npm run test && cp ./src/_types.d.ts ./dist/_types.d.ts",
     "build": "node node/esbuild.lib.mjs && node node/esbuild.lib.mjs --minify",
-    "postbuild": "cp ./src/_types.d.ts ./dist/_types.d.ts && npm run test",
+    "postbuild": "node node/esbuild.lib.mjs --suffix=.cjs && node node/esbuild.lib.mjs --minify -suffix=.cjs",
+    "prepublish": "npm run build",
+    "prepack": "npm run build",
     "tsc": "tsc"
   },
   "keywords": [

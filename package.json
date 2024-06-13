@@ -1,7 +1,7 @@
 {
   "name": "node-timestep",
   "version": "0.1.0",
-  "description": "Native Node.js timestep helper using setImmediate interval.",
+  "description": "Node.js timestep helper using setImmediate interval.",
   "main": "index.js",
   "type": "module",
   "exports": {

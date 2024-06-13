@@ -116,14 +116,6 @@ export const requestTimestep = (
 
       let currentFPS = 1000 / delta;
 
-      // let i = 0
-      // console.log('BAR', delta)
-      // while (hrtimeToMs(process.hrtime(this.lastTime)) <= interval) {
-      //   console.log('SHOULD UPDATE', i)
-
-      //   i += 1
-      // }
-
       if (delta > this.interval) {
         offset = parseFloat((delta / this.interval).toFixed(8));
       }

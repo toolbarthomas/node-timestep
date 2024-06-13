@@ -8,7 +8,7 @@ Use this package for precise game state updates and smooth client rendering in m
 
 ## API
 
-This packages encapsulates a robust implementation of a game loop manager for Node.js, ensuring precise control over game state updates and rendering. It offers flexibility through customizable FPS settings and callback handling, making it suitable for various game development needs in a Node.js environment.
+It encapsulates a robust implementation of a game loop manager for Node.js, ensuring precise control over game state updates and rendering. It offers flexibility through customizable FPS settings and callback handling, making it suitable for various game development needs in a Node.js environment.
 
 ### Options
 
@@ -47,7 +47,7 @@ This packages encapsulates a robust implementation of a game loop manager for No
 
 ```ts
 {
-   currentFPS: number;
+  currentFPS: number;
   timestamp: number;
   delta: number;
   duration: number;

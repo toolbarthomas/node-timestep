@@ -26,11 +26,13 @@ export const requestTimestep = (
   props: TimestepRequestProperties
 ): TimeStepRequest => {
   // Initialize properties
-  const fps = typeof props.fps === "number" ? props.fps : 30;
-  const frameIntervals: number[] = [];
-  const start = process.hrtime();
   const MAX_NUMBER = Number.MAX_VALUE;
   const MAX_THREADS = 2;
+  const MAX_TOLERANCE = 1;
+
+  const fps = (typeof props.fps === "number" ? props.fps : 30) * MAX_TOLERANCE;
+  const frameIntervals: number[] = [];
+  const start = process.hrtime();
 
   // Timestep object with methods
   const timestep: Timestep = {
@@ -102,7 +104,9 @@ export const requestTimestep = (
             currentIndex,
             delta: updateDelta,
             duration,
-            offset: parseFloat((updateDelta / this.interval).toFixed(8)),
+            offset: parseFloat(
+              (this.targetFPS / (1000 / updateDelta)).toFixed(8)
+            ),
           });
         }
 
@@ -112,16 +116,10 @@ export const requestTimestep = (
         // Render callback on separate callstack
         if (callbackDelta >= 1) {
           this.willRender = true;
-          setImmediate(() => this.loop());
+          // setImmediate(() => this.loop());
+          this.loop();
           return;
         }
-      }
-
-      // Calculate current FPS and offset
-      let currentFPS = 1000 / delta;
-
-      if (delta > this.interval) {
-        offset = parseFloat((delta / this.interval).toFixed(8));
       }
 
       // Continue loop or set immediate render
@@ -129,6 +127,11 @@ export const requestTimestep = (
         setImmediate(() => this.loop());
         return;
       }
+
+      // Calculate current FPS and offset
+      let currentFPS = 1000 / delta;
+
+      offset = parseFloat((currentFPS / this.targetFPS).toFixed(8));
 
       // Maintain frame intervals and call render callback
       if (frameIntervals.length >= 10) {
@@ -157,10 +160,11 @@ export const requestTimestep = (
       this.currentFrame += 1;
       this.lastTime = process.hrtime();
 
-      // Continue loop with setImmediate
-      setImmediate(() => {
-        this.loop();
-      });
+      this.loop();
+      // // Continue loop with setImmediate
+      // setImmediate(() => {
+      //   // this.loop();
+      // });
     },
 
     // Resume timestep execution
@@ -196,7 +200,7 @@ export const requestTimestep = (
     isActive: () => timestep.isActive,
     updateFPS: (targetFPS?: number) => {
       if (targetFPS) {
-        timestep.targetFPS = Math.abs(targetFPS) || fps;
+        timestep.targetFPS = (Math.abs(targetFPS) || fps) * MAX_TOLERANCE;
         timestep.interval = 1000 / timestep.targetFPS;
         timestep.next = new Array(Math.floor(timestep.interval * MAX_THREADS))
           .fill(setImmediate)

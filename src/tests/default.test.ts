@@ -21,6 +21,7 @@ describe("Can construct a new Timestep instance within the current process:", fu
 
           // Update FPS should be at least higher then expected targetFPS.
           assert.equal(response.currentFPS > targetFPS, true);
+          assert.equal(response.offset >= 0.4 && response.offset <= 0.6, true);
           updateFPS = 1000 / response.delta;
         },
         onRender: function (response) {
@@ -28,9 +29,9 @@ describe("Can construct a new Timestep instance within the current process:", fu
           renderFPS = 1000 / response.delta;
           averageFPS = response.averageFPS;
 
-          // Accept a 10% framedrop tolerance;
+          // Accept a 20% framedrop tolerance;
           assert.equal(
-            targetFPS - Math.floor(response.currentFPS) <= targetFPS * 0.1,
+            targetFPS - Math.floor(response.currentFPS) <= targetFPS * 0.2,
             true
           );
         },

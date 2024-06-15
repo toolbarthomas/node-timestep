@@ -45,7 +45,7 @@ export const requestTimestep = (
     averageFPS: 0,
     currentIndex: -1,
     currentCycle: 0,
-    currentFrame: -1,
+    currentFrame: 0,
     targetFPS: fps,
     throttle: undefined,
     delta: 0,
@@ -100,7 +100,7 @@ export const requestTimestep = (
           props.onUpdate({
             timestamp: hrtimeToMs(process.hrtime()),
             currentFPS: 1000 / updateDelta,
-            currentFrame: currentFrame + 1,
+            currentFrame: currentFrame,
             currentIndex,
             delta: updateDelta,
             duration,
@@ -149,22 +149,17 @@ export const requestTimestep = (
             frameIntervals.reduce((a, b) => b + a, 0) / frameIntervals.length,
           delta,
           duration,
-          currentFrame: currentFrame + 1,
+          currentFrame: this.currentFrame,
           offset,
         });
 
+        this.currentFrame += Math.ceil(offset);
         this.willRender = false;
       }
 
-      // Update frame index and last time
-      this.currentFrame += 1;
       this.lastTime = process.hrtime();
 
       this.loop();
-      // // Continue loop with setImmediate
-      // setImmediate(() => {
-      //   // this.loop();
-      // });
     },
 
     // Resume timestep execution
@@ -186,7 +181,7 @@ export const requestTimestep = (
   };
 
   // Set next timestep loop iteration
-  timestep.next = new Array(Math.floor(timestep.interval * MAX_THREADS))
+  timestep.next = new Array(Math.floor(timestep.interval / MAX_THREADS))
     .fill(setImmediate)
     .reduce((acc, fn) => () => fn(acc), timestep.loop.bind(timestep));
 

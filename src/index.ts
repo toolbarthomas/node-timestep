@@ -29,8 +29,9 @@ export const requestTimestep = (
   const MAX_NUMBER = Number.MAX_VALUE;
   const MAX_THREADS = 2;
   const MAX_TOLERANCE = 1;
+  const FPS = 30;
 
-  const fps = (typeof props.fps === "number" ? props.fps : 30) * MAX_TOLERANCE;
+  const fps = (typeof props.fps === "number" ? props.fps : FPS) * MAX_TOLERANCE;
   const frameIntervals: number[] = [];
   const start = process.hrtime();
 

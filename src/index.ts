@@ -6,10 +6,10 @@ import {
 } from "./_types";
 
 /**
- * Internal helper function to convert a high resolution timestamp to milliseconds.
+ * Internal helper function to convert a high resolution timestamp in
+ * milliseconds.
  *
  * @param hrtime Optional high resolution timestamp to convert.
- * @returns Millisecond value of the given high resolution timestamp.
  */
 export const hrtimeToMs = (hrtime?: number[]) => {
   const time = hrtime || process.hrtime();
@@ -19,8 +19,8 @@ export const hrtimeToMs = (hrtime?: number[]) => {
 /**
  * Constructs a new timestep instance for managing game loop in Node.js.
  *
- * @param props Optional properties for handling callbacks and custom runtime behavior.
- * @returns An object with methods to control the timestep instance.
+ * @param props Optional properties for handling callbacks and custom runtime
+ * behavior.
  */
 export const requestTimestep = (
   props: TimestepRequestProperties
@@ -35,9 +35,11 @@ export const requestTimestep = (
   const frameIntervals: number[] = [];
   const start = process.hrtime();
 
-  // Timestep object with methods
+  // Defines the actual Timestep instance.
   const timestep: Timestep = {
+    // The timestamp of the last successfull iteration.
     lastTime: start,
+
     next: undefined,
     lastUpdate: start,
     willUpdate: false,
@@ -71,16 +73,18 @@ export const requestTimestep = (
 
       this.currentIndex += 1;
 
-      // Calculate time deltas
+      // Calculate the delta between each render.
       const now = process.hrtime();
       const delta = hrtimeToMs(process.hrtime(this.lastTime));
+
+      // Specific delta value between each update phase.
       const updateDelta = hrtimeToMs(process.hrtime(this.lastUpdate));
 
-      // Store current frame and cycle indices
+      // Keep track of the Timestep & Render iterations.
       const currentFrame = this.currentFrame;
       const currentIndex = this.currentIndex;
 
-      // Calculate duration and offset
+      // Parse the total duration and
       let duration = hrtimeToMs(now) - hrtimeToMs(start);
       let offset = 1;
       const multiplier = this.interval / delta;
@@ -129,7 +133,7 @@ export const requestTimestep = (
         return;
       }
 
-      // Calculate current FPS and offset
+      // Calculate current FPS and additional drift.
       let currentFPS = 1000 / delta;
 
       offset = parseFloat((currentFPS / this.targetFPS).toFixed(8));
@@ -143,15 +147,15 @@ export const requestTimestep = (
 
       if (props && props.onRender) {
         props.onRender({
-          currentIndex,
-          timestamp: hrtimeToMs(process.hrtime()),
-          currentFPS,
           averageFPS:
             frameIntervals.reduce((a, b) => b + a, 0) / frameIntervals.length,
-          delta,
-          duration,
+          currentFPS,
           currentFrame: this.currentFrame,
+          currentIndex,
+          delta,
           offset,
+          duration,
+          timestamp: hrtimeToMs(process.hrtime()),
         });
 
         this.currentFrame += Math.ceil(offset);

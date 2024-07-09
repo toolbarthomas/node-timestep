@@ -42,7 +42,7 @@ export type TimestepRenderResponse = {
   duration: number;
   currentIndex: number;
   currentFrame: number;
-  offset: number;
+  offset?: number;
 };
 
 export type TimestepUpdateResponse = {
@@ -52,7 +52,7 @@ export type TimestepUpdateResponse = {
   duration: number;
   currentIndex: number;
   currentFrame: number;
-  offset: number;
+  offset?: number;
 };
 
 export type TimestepUpdateHandler = (response: TimestepUpdateResponse) => void;
